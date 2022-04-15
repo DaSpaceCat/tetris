@@ -3,8 +3,8 @@
 Shape::Shape() {
     // generate random shape as constructor
 
-    random_device rd; 
-    mt19937 eng(rd()); 
+    random_device rd;
+    mt19937 eng(rd());
     uniform_int_distribution<> distr(1, 7);
 
     int rand = distr(eng) - 1;
@@ -16,7 +16,7 @@ Shape::Shape() {
 void Shape::generate(vector<vector<string> > window) {
     // moves the next random state to the current state
     // and generates the next random state
-    
+
     // fix death state
     dead = false;
     // move old data to new spot
@@ -35,7 +35,7 @@ void Shape::generate(vector<vector<string> > window) {
 
     selected = shapecoords[shapetype[0]];
     chosenchars = chars[shapetype[0]];
-    color = colors[shapetype[0]];       
+    color = colors[shapetype[0]];
 
     // find the height of the shape
     shapeHeight = 0;
@@ -107,7 +107,7 @@ void Screen::shiftLines(vector<int> lines) {
         // empty full lines
         for ( int x = 5; x < 25; x++)
             window[lines[i]][x] = " ";
-    
+
     usleep(45000);
     move(0,0);
     refresh();
@@ -181,7 +181,7 @@ void Shape::drop() {
 }
 
 
-void Shape::rotate() { 
+void Shape::rotate() {
     // rotates the 'selected' shape array counterclockwise if possible
 
     vector<vector<bool> > temp;
@@ -200,9 +200,59 @@ void Shape::rotate() {
         for (count2 = 0; count2 < selected[0].size(); count2++) {
             // counter-clockwise rotation
             temp[temp.size() - count2 - 1][count] = selected[count][count2];
-            
+
             // clockwise rotation
             // temp[count2][temp[0].size() - count - 1] = selected[count][count2];
+        }
+    }
+
+    vector<int> coords = charCoords(temp);
+    bool rotate = true;
+    for ( int i = 0; i < coords.size(); i += 2 ) {
+        string chosen = currentWin[coords[i] - 1][coords[i + 1] + 2];
+        if ( chosen != " " )
+            rotate = false;
+    }
+
+    if ( rotate )
+        selected = temp;
+
+    // resetting shapeHeight variable
+    shapeHeight = 0;
+    for ( int row = 0; row < selected.size(); row++ ) {
+        bool found = false;
+        for ( int cell = 0; cell < selected[row].size(); cell++ ) {
+            if (selected[row][cell] == 1) {
+                found = true;
+            }
+        }
+        if ( found )
+            shapeHeight++;
+    }
+}
+
+void Shape::rotate2() {
+    // rotates the 'selected' shape array counterclockwise if possible
+
+    vector<vector<bool> > temp;
+
+    for ( int i = 0; i < selected.size(); i++ ) {
+        vector<bool> row;
+        for ( int j = 0; j < selected.size(); j++)
+            row.push_back(0);
+        temp.push_back(row);
+    }
+
+    int count = 0; // count variable
+    int count2 = 0; // 2nd count variable
+
+    for (count = 0; count < selected.size(); count++) {
+        for (count2 = 0; count2 < selected[0].size(); count2++) {
+            // counter-clockwise rotation
+            //temp[temp.size() - count2 - 1][count] = selected[count][count2];
+
+            // clockwise rotation
+            temp[count2][temp[0].size() - count - 1] = selected[count][count2];
         }
     }
 
@@ -278,7 +328,7 @@ void Shape::move(int movetype) {
     int currentPos[2] = { trCoord[0] + defaultPos[1], trCoord[1] + defaultPos[0]};
 
     vector<int> coords = charCoords(selected);
-    
+
     bool move = true;
 
     if ( movetype == 1 ) {
@@ -339,7 +389,7 @@ void Shape::ground(int framerate) {
                 moveDown = false;
             }
         }
-        
+
         if (moveDown) {
             trCoord[0] += 1;
         }
@@ -353,7 +403,7 @@ vector<int> Shape::groundCoords(vector<vector<bool> > shape, int down) {
     for ( int i = 0; i < shape.size(); i++ ) {
         for ( int j = 0; j < shape[i].size(); j++ ) {
             if ( shape[i][j] ) {
-                
+
                 int thisPos[2] = { currentPos[0] + i, currentPos[1] + ( 2 * j ) };
                 coords.push_back(thisPos[0]);
                 coords.push_back(thisPos[1]);
@@ -402,7 +452,7 @@ void Shape::showGround() {
                 moveDown = false;
             }
         }
-        
+
         if (moveDown) {
             down += 1;
         }

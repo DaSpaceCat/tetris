@@ -32,14 +32,15 @@ void Screen::top() {
 
 void Screen::draw() {
     // loop through the window and print it
-    for ( int i = 0; i < window.size(); i++ ) {
+    for ( int i = 0; i < window.size(); i++) {
+        //i++;
         for ( int j = 0; j < window[i].size(); j++) {
 
             string cur = window[i][j]; // the current character
 
             if ( (( i >= 1 && i < 19 ) && ( j > 4 && j < 25)) || ( ( i >= 3 && i < 6 ) && ( j > 33 && j < 43) )) {
 
-                // we're inside a game window, so we must 
+                // we're inside a game window, so we must
                 // check for integer print keys
 
                 if ( cur != " ") {
@@ -81,7 +82,7 @@ void Screen::draw() {
 
 void Screen::addNext(vector<vector<bool> > shape, vector<int> colors) {
     // adds the shape that is next up to the mini window
-    
+
     // default positions for the window
     int x = 34;
     int y = 3;
@@ -98,7 +99,7 @@ void Screen::addNext(vector<vector<bool> > shape, vector<int> colors) {
             else {
                 // print two spaces
                 window[y + i][x + ( 2 * j )] = " ";
-                window[y + i][x + ( 2 * j ) + 1] = " ";               
+                window[y + i][x + ( 2 * j ) + 1] = " ";
             }
         }
     }
@@ -135,11 +136,11 @@ bool Screen::points() {
     // and returns whether or not to advance to the next level
 
     // add lines gained this round to line score
-    vector<int> fullLines = pointCheck();    
+    vector<int> fullLines = pointCheck();
     int linesNew = fullLines.size();
     lines += linesNew;
 
-    // amounts of points gained at different number of clears 
+    // amounts of points gained at different number of clears
     vector<int> pointsPerClear = { 40 * (level), 100 * (level), 300 * (level), 1200 * level};
 
     // add points gained this round to point score

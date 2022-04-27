@@ -49,11 +49,11 @@ void Screen::draw() {
 
                     if (stoi(cur) % 2 == 0) {
                         colorNum = stoi(cur) / 2 - 1;
-                        printChar = "█";
+                        printChar = "]";
                     }
                     else {
                         colorNum = floor(stoi(cur) / 2);
-                        printChar = "█";
+                        printChar = "[";
                     }
 
                     int color = colors[colorNum];

@@ -116,7 +116,7 @@ void Screen::shiftLines(vector<int> lines) {
     if ( lines.size() > 0  ) {
         for ( int i = 0; i < lines.size(); i++ )
             for ( int x = 3; x < 23; x++)
-                mvprintw(lines[i],x,"█");
+                mvprintw(lines[i],x,"]");
 
         move(0,0);
         refresh();
@@ -128,7 +128,7 @@ void Screen::shiftLines(vector<int> lines) {
 
         for ( int i = 0; i < lines.size(); i++ )
             for ( int x = 3; x < 23; x++)
-                mvprintw(lines[i],x,"█");
+                mvprintw(lines[i],x,"[");
 
         move(0,0);
         refresh();
@@ -281,6 +281,54 @@ void Shape::rotate2() {
     }
 }
 
+void Shape::rotate3() {
+    // rotates the 'selected' shape array counterclockwise if possible
+
+    vector<vector<bool> > temp;
+
+    for ( int i = 0; i < selected.size(); i++ ) {
+        vector<bool> row;
+        for ( int j = 0; j < selected.size(); j++)
+            row.push_back(0);
+        temp.push_back(row);
+    }
+
+    int count = 0; // count variable
+    int count2 = 0; // 2nd count variable
+
+    for (count = 0; count < selected.size(); count++) {
+        for (int i = 0; i < 2; i++) {
+            for (count2 = 0; count2 < selected[0].size(); count2++) {
+                temp[count2][temp[0].size() - count - 1] = selected[count][count2];
+            }
+        }
+    }
+
+    vector<int> coords = charCoords(temp);
+    bool rotate = true;
+    for ( int i = 0; i < coords.size(); i += 2 ) {
+        string chosen = currentWin[coords[i] - 1][coords[i + 1] + 2];
+        if ( chosen != " " )
+            rotate = false;
+    }
+
+    if ( rotate )
+        selected = temp;
+
+    // resetting shapeHeight variable
+    shapeHeight = 0;
+    for ( int row = 0; row < selected.size(); row++ ) {
+        bool found = false;
+        for ( int cell = 0; cell < selected[row].size(); cell++ ) {
+            if (selected[row][cell] == 1) {
+                found = true;
+            }
+        }
+        if ( found )
+            shapeHeight++;
+    }
+}
+
 void Shape::draw( ) {
     int currentPos[2] = { trCoord[0] + defaultPos[1], trCoord[1] + defaultPos[0]};
 
@@ -293,7 +341,7 @@ void Shape::draw( ) {
             // for each el in line;
             if ( line[i] ) {
                 // need to draw two side by side fullblocks;
-                mvprintw(currentPos[0], currentPos[1], string("██").c_str());
+                mvprintw(currentPos[0], currentPos[1], string("[]").c_str());
             }
             else {
                 mvprintw(currentPos[0], currentPos[1], string("").c_str());
